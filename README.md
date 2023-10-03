@@ -1,8 +1,9 @@
-## Tài liệu và bài làm phần thực hành cho môn Hệ cơ sở dữ liệu IUH
+## Tài liệu và bài tập thực hành cho môn Hệ quản trị cơ sở dữ liệu IUH
 
 *Update đều đặn vào thứ 5 hàng tuần*
 
-> Mã học phần: 4203001146
+> Mã học phần: 4203001146 <br>
+> Dành cho các ngành học không thuộc IT
 
 [Bài giảng](./Documents/2022_BaiTapThucHanhCSDL_DaiHoc%20_v3.pdf)
 
