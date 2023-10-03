@@ -2,8 +2,7 @@
 
 *Update đều đặn vào thứ 5 hàng tuần*
 
-
-    Mã học phần: 4203001146
+> Mã học phần: 4203001146
 
 [Bài giảng](./Documents/2022_BaiTapThucHanhCSDL_DaiHoc%20_v3.pdf)
 
