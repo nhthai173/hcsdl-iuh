@@ -1,4 +1,4 @@
-﻿-- Bai 1 - Tuan 3
+﻿-- Bai 1 - Tuan 4
 
 -- Tao bang
 create database QLBH
@@ -142,13 +142,6 @@ insert into CT_HoaDon (MaHD, MaSP, Dongia, Soluong) values
 (3, 2, 3500, 20),
 (3, 3, 1000, 15)
 
-alter table CT_HoaDon drop constraint FK__CT_HoaDon__MaSP__4AB81AF0
-alter table CT_HoaDon add foreign key (MaHD) references HoaDon(MaHD)
-
-select * from SanPham
-delete from CT_HoaDon
-
-
 
 -- 2-a) Tang don gia ban len 5% cho cac san pham co ma la 2
 update SanPham set GiaGoc = GiaGoc * 1.05 where MaSP = 2
@@ -157,4 +150,47 @@ update SanPham set GiaGoc = GiaGoc * 1.05 where MaSP = 2
 update SanPham set SLTON = 100 where MaNhom = 3 and MaNCC = 2
 
 -- 2-c) Cap nhat mo to cho lo vi song
-update SanPham set MoTa = N'Lò Vi Sóng' where TenSP = N'Lò Vi Sóng'
+update SanPham set MoTa = 'Panasonic' where TenSP = N'Lò Vi Sóng'
+
+-- 2-d) Cập nhật mã khách hàng 'KH3' thành 'VI003'
+update HoaDon set MaKH = null where MaKH = 'KH3'
+update KhachHang set MaKH='VI003' where MaKH = 'KH3'
+
+-- cap nhat lai ma kh cho VI003 trong HD
+update HoaDon set MaKH = 'VI003' where MaHD = 3
+
+-- 2-e) Tương tự, sửa mã khách hàng ‘KH1’ thành ‘VL001’ , ‘KH2’  thành ‘T0002’
+sp_helpconstraint HoaDon
+
+alter table HoaDon drop constraint FK__HoaDon__MaKH__45F365D3
+
+alter table HoaDon add constraint FK_HoaDon_KhachHang foreign key (MaKH) references KhachHang(MaKH)
+	on update cascade
+	on delete cascade
+
+-- cap nhat cho KH1, KH2
+update KhachHang set MaKH = 'VL001' where MaKH = 'KH1'
+update KhachHang set MaKH = 'T0002' where MaKH = 'KH2'
+
+
+-- 3-a) Xoa dong trong nhom hang co ma 4
+delete from NhomSanPham where MaNhom = 4
+
+-- 3-b) Xóa dòng trong CT_Hoadon  có MaHD là 1 và MaSP là 3
+delete from CT_HoaDon where MaHD = 1 and MaSP = 3
+
+-- 3-c) Xóa dòng trong bảng HoaDon có mã là 1
+delete from CT_HoaDon where MaHD = 1
+delete from HoaDon where MaHD = 1
+
+-- Thiết lập lại ràng buộc khóa ngoại trên bảng CT_HoaDon để cho phép khixóa dòng trên bảng HoaDon thì tự động xóa các dòng trong  CT_HoaDon  mà  có  tham  chiếu  đến  dòng  đang  xóa  trong HoaDon.
+sp_helpconstraint CT_HoaDon
+
+alter table CT_HoaDon drop constraint FK__CT_HoaDon__MaHD__5AEE82B9
+
+alter table CT_HoaDon add constraint FK_CT_HoaDon_MaHD foreign key (MaHD) references HoaDon(MaHD)
+	on update cascade
+	on delete cascade
+
+-- 3-d) Tương tự , xóa dòng trong bảng HoaDon có mã là 2
+delete from CT_HoaDon where MaHD = 2
