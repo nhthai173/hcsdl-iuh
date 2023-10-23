@@ -275,7 +275,7 @@ from
 where
 	year(OrderDate) = 1997 and
 	month(OrderDate) = 12 and
-	datepart(weekday, OrderDate) in (1, 2)
+	datepart(weekday, OrderDate) in (7, 1)
 
 
 
