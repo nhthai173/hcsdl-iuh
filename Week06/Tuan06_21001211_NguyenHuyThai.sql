@@ -347,4 +347,43 @@ WHERE
 
 -- 12.Liệt  kê  danh  sách  các  sản  phẩm  chưa  bán  được  (dùng  LEFT JOIN/RIGHT JOIN).
 
+SELECT
+    Products.ProductID,
+    ProductName,
+    [Order Details].ProductID
+FROM
+    Products
+LEFT JOIN
+    [Order Details]
+ON
+    Products.ProductID = [Order Details].ProductID
+WHERE
+    [Order Details].ProductID IS NULL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- 13.Liệt kê danh sách các khách hàng chưa mua hàng lần nào (dùng LEFT JOIN/RIGHT JOIN).
+
+SELECT
+    Customers.CustomerID,
+    CompanyName,
+    Orders.CustomerID
+FROM
+    Customers
+LEFT JOIN
+    Orders
+ON
+    Customers.CustomerID = Orders.CustomerID
+WHERE
+    Orders.CustomerID IS NULL
