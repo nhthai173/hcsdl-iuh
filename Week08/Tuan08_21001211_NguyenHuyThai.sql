@@ -133,19 +133,66 @@ HAVING
 --- Thống kê tổng số lượng bán ứng với mỗi mặt hàng thuộc nhóm
 --hàng có CategoryID là 4. Thông tin : ProductID, QuantityTotal
 --(tập A)
+
+SELECT
+	p.ProductID,
+	SUM(Quantity) as QuantityTotal
+FROM
+	Products p
+	LEFT JOIN [Order Details] od
+	ON p.ProductID = od.ProductID
+WHERE
+	CategoryID = 4
+GROUP BY
+	p.ProductID
+
+
+
+
 --- Thống kê tổng số lượng bán ứng với mỗi mặt hàng thuộc nhóm
 --hàng có CategoryID khác 4 . Thông tin : ProductID,
 --QuantityTotal (tập B)
+
+SELECT
+	p.ProductID,
+	SUM(Quantity) as QuantityTotal
+FROM
+	Products p
+	LEFT JOIN [Order Details] od
+	ON p.ProductID = od.ProductID
+WHERE
+	CategoryID != 4
+GROUP BY
+	p.ProductID
+
+
+
+
 --- Dựa vào 2 truy vấn trên : Liệt kê danh sách các mặt hàng trong
 --tập A có QuantityTotal lớn hơn tất cả QuantityTotal của tập B
-
-
-
-
-
-
-
-
+	
+SELECT
+	p.ProductID,
+	SUM(Quantity) as QuantityTotal
+FROM
+	Products p
+	LEFT JOIN [Order Details] od
+	ON p.ProductID = od.ProductID
+WHERE
+	CategoryID = 4
+GROUP BY
+	p.ProductID
+HAVING
+	SUM(Quantity) >ALL (SELECT
+							SUM(Quantity)
+						FROM
+							Products p
+							LEFT JOIN [Order Details] od
+							ON p.ProductID = od.ProductID
+						WHERE
+							CategoryID != 4
+						GROUP BY
+							p.ProductID)
 
 
 
@@ -153,15 +200,110 @@ HAVING
 --1998
 --Lưu ý : Có nhiều phương án thực hiện các truy vấn sau (dùng JOIN hoặc
 --subquery ). Hãy đưa ra phương án sử dụng subquery.
+
+SELECT
+	p.ProductID,
+	p.ProductName,
+	SUM(Quantity) as SumQuantity	
+FROM
+	Products p
+	LEFT JOIN [Order Details] od
+	ON p.ProductID = od.ProductID
+	LEFT JOIN Orders o
+	ON od.OrderID = o.OrderID
+WHERE
+	YEAR(OrderDate) = 1998
+GROUP BY
+	p.ProductID,
+	p.ProductName
+HAVING
+	SUM(Quantity) >=ALL (SELECT
+							SUM(Quantity)	
+						FROM
+							Products p
+							LEFT JOIN [Order Details] od
+							ON p.ProductID = od.ProductID
+							LEFT JOIN Orders o
+							ON od.OrderID = o.OrderID
+						WHERE
+							YEAR(OrderDate) = 1998
+						GROUP BY
+							p.ProductID)
+
+
+
 --10. Danh sách các products đã có khách hàng mua hàng (tức là ProductID có
 --trong [Order Details]). Thông tin bao gồm ProductID, ProductName,
 --Unitprice
+
+SELECT DISTINCT
+	P.ProductID,
+	ProductName,
+	p.UnitPrice
+FROM
+	Products p
+	INNER JOIN [Order Details] od
+	ON p.ProductID = od.ProductID
+
+
+
 --11. Danh sách các hóa đơn của những khách hàng ở thành phố LonDon và
 --Madrid.
+
+SELECT o.*
+FROM
+	Orders o
+	INNER JOIN Customers c ON o.CustomerID = c.CustomerID
+WHERE
+	c.City in ('LonDon', 'Madrid')
+
+
 --12.Liệt kê các sản phẩm có trên 10 đơn hàng trong quí 3 và 4 năm 1997,
 --thông tin gồm ProductID, ProductName.
+
+SELECT
+	p.ProductID,
+	p.ProductName,
+	COUNT(p.ProductID) as OrderQuantity
+FROM
+	Products p
+	INNER JOIN [Order Details] od ON p.ProductID = od.ProductID
+	INNER JOIN Orders o ON od.OrderID = o.OrderID
+WHERE
+	YEAR (OrderDate) = 1997
+	AND (DATEPART(QQ, OrderDate) between 3 and 4)
+GROUP BY
+	p.ProductID,
+	p.ProductName
+HAVING
+	COUNT(p.ProductID) > 10
+
+
 --13.Liệt kê danh sách các sản phẩm chưa bán được trong tháng 7 năm 1996
+
+SELECT
+	p.*	
+FROM
+	Products p
+	LEFT JOIN [Order Details] od ON p.ProductID = od.ProductID
+	LEFT JOIN Orders o ON od.OrderID = o.OrderID
+WHERE
+	od.ProductID IS NULL
+	AND YEAR(OrderDate) = 1996
+	AND MONTH(OrderDate) = 7
+
+
+
 --14.Liệt kê danh sách các Employes không lập hóa đơn vào ngày hôm nay
+SELECT
+
+FROM
+	Employees e
+	INNER JOIN Orders o ON o.
+
+
+
+
 --15.Liệt kê danh sách các Customers chưa mua hàng trong năm 1997
 --16.Tìm tất cả các Customers mua các sản phẩm có tên bắt đầu bằng chữ T
 --trong tháng 7 năm 1997
