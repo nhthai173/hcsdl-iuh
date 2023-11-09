@@ -296,16 +296,74 @@ WHERE
 
 --14.Liệt kê danh sách các Employes không lập hóa đơn vào ngày hôm nay
 SELECT
-
+	e.*
 FROM
 	Employees e
-	INNER JOIN Orders o ON o.
+	LEFT JOIN Orders o ON e.EmployeeID = o.EmployeeID
+WHERE
+	o.OrderID IS NULL
+	AND CONVERT(DATE, GETDATE()) = CONVERT(DATE, OrderDate)
+
 
 
 
 
 --15.Liệt kê danh sách các Customers chưa mua hàng trong năm 1997
+
+SELECT
+	c.*
+FROM
+	Customers c
+	LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE
+	YEAR(OrderDate) != 1997
+	AND o.OrderID IS NULL
+
+
+
+
+
 --16.Tìm tất cả các Customers mua các sản phẩm có tên bắt đầu bằng chữ T
 --trong tháng 7 năm 1997
+
+SELECT
+	c.CustomerID,
+	CompanyName,
+	ContactName
+FROM
+	Customers c
+	INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+	INNER JOIN [Order Details] od ON o.OrderID = od.OrderID
+	INNER JOIN Products p ON od.ProductID = p.ProductID
+WHERE
+	YEAR(OrderDate) = 1997
+	AND MONTH(OrderDate) = 7
+	AND p.ProductName LIKE 'T%'
+GROUP BY
+	c.CustomerID,
+	c.CompanyName,
+	c.ContactName,
+	c.ContactTitle
+
+
+
+
 --17.Liệt kê danh sách các khách hàng mua các hóa đơn mà các hóa đơn này
 --chỉ mua những sản phẩm có mã >=3
+
+SELECT
+	c.CustomerID,
+	CompanyName,
+	ContactName
+FROM
+	Customers c
+	INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+	INNER JOIN [Order Details] od ON o.OrderID = od.OrderID
+	INNER JOIN Products p ON od.ProductID = p.ProductID
+WHERE
+	p.ProductID >= 3
+GROUP BY
+	c.CustomerID,
+	c.CompanyName,
+	c.ContactName,
+	c.ContactTitle
