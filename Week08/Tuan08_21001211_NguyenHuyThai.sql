@@ -367,3 +367,40 @@ GROUP BY
 	c.CompanyName,
 	c.ContactName,
 	c.ContactTitle
+
+
+
+-- 18.Tìm các Customer chưa từng lập hóa đơn (viết bằng ba cách: dùng NOT EXISTS, dùng  LEFT JOIN, dùng NOT IN )
+
+-- 18.1 Dùng NOT EXIST
+SELECT
+	c.*
+FROM
+	Customers c
+WHERE
+	NOT EXISTS (SELECT
+					*
+				FROM
+					Orders o
+				WHERE
+					c.CustomerID = o.CustomerID)
+
+
+-- 18.2 Dùng LEFT JOIN
+SELECT
+	c.*
+FROM
+	Customers c
+	LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE
+	o.OrderID IS NULL
+
+
+
+-- 18.3 Dùng NOT IN
+SELECT
+	*
+FROM
+	Customers
+WHERE
+	CustomerID NOT IN (SELECT CustomerID FROM Orders)
